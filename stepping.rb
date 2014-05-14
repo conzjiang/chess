@@ -1,6 +1,6 @@
 class SteppingPiece < Piece
   def moves
-    possible_moves = Set.new([])
+    possible_moves = []
     
     move_dirs.each do |x, y|
       possible_pos = [pos[0] + x, pos[1] + y]
@@ -17,7 +17,7 @@ class Knight < SteppingPiece
   end
   
   def move_dirs
-    Set.new([[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]])
+    [[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]]
   end
 end
 
@@ -27,6 +27,6 @@ class King < SteppingPiece
   end
   
   def move_dirs
-    Set.new([[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]])
+    [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]]
   end
 end

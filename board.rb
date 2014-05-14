@@ -1,12 +1,12 @@
 class Board
-  attr_accessor :board_array
+  attr_accessor :grid
   
   def self.empty_grid
     Array.new(8) { Array.new(8) }
   end
   
-  def initialize(board = Board.empty_grid)
-    @board_array = board
+  def initialize(grid = Board.empty_grid)
+    @grid = grid
     @turn = :white
     populate
   end
@@ -27,11 +27,11 @@ class Board
   end
   
   def [](pos)
-    board_array[pos[0]][pos[1]]
+    grid[pos[0]][pos[1]]
   end
   
   def []=(pos, piece)
-    board_array[pos[0]][pos[1]] = piece
+    grid[pos[0]][pos[1]] = piece
   end
   
   def empty?(pos)
@@ -39,7 +39,7 @@ class Board
   end
   
   def pieces
-    Set.new(board_array.flatten.compact)
+    grid.flatten.compact
   end
   
   def find_king(color)
@@ -58,8 +58,7 @@ class Board
     king = find_king(color)
     
     pieces.any? do |piece|
-      piece.color != king.color &&
-      piece.moves.include?(king.pos)
+      piece.color != king.color && piece.moves.include?(king.pos)
     end
   end
   
@@ -86,33 +85,30 @@ class Board
     
     puts "   a  b  c  d  e  f  g  h "
     
-    board_array.each_with_index do |row, row_i|
+    grid.each_with_index do |row, row_i|
       print "#{8 - row_i} "
       
       row.each do |piece|
         bg_color = turn == 1 ? :red : :cyan
         
-        if piece.nil?
-          print "   ".colorize( :background => bg_color)
-        else
-          print " #{piece} ".colorize(piece.color).colorize( :background => bg_color)
-        end
+        grid_space = piece.nil? ?  "   " : " #{piece} ".colorize(piece.color)
+        print grid_space.colorize(:background => bg_color)
         
-        turn = turn == 1 ? 2 : 1
+        turn = turn == 1 ? 2 : 1 #toggle background after each element
       end
       
-      turn = turn == 1 ? 2 : 1
+      turn = turn == 1 ? 2 : 1 #toggle background after each row
       puts
     end
   end
   
   def dup
-    b = Board.new
+    board_dup = Board.new
     
     pieces.each do |piece|
-      b[piece.pos] = piece.class.new(b, piece.pos.dup, piece.color)
+      board_dup[piece.pos] = piece.class.new(board_dup, piece.pos.dup, piece.color)
     end
     
-    b
+    board_dup
   end
 end

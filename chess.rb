@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-require 'set'
 require 'colorize'
 require "./game.rb"
 require "./board.rb"

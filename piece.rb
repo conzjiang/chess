@@ -11,11 +11,7 @@ class Piece
     coord[0].between?(0, 7) && coord[1].between?(0, 7) &&
     (board.empty?(coord) || board[coord].color != self.color)
   end
-  
-  def to_s
-    " "
-  end
-  
+    
   def valid_moves
     self.moves.reject { |move| self.move_into_check?(move) }
   end

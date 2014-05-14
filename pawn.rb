@@ -4,8 +4,7 @@ class Pawn < Piece
   end
   
   def moves
-    
-    possible_moves = Set.new([])
+    possible_moves = []
 
     if self.color == :black
       left_black_diag = [pos[0] + 1, pos[1] - 1]

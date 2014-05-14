@@ -1,7 +1,6 @@
 class SlidingPiece < Piece
-  
   def moves
-    possible_moves = Set.new([])
+    possible_moves = []
     
     move_dirs.each do |x, y|
       n = 1
@@ -17,7 +16,6 @@ class SlidingPiece < Piece
     
     possible_moves
   end
-  
 end
 
 class Rook < SlidingPiece
@@ -26,7 +24,7 @@ class Rook < SlidingPiece
   end
   
   def move_dirs
-    Set.new([[1, 0], [-1, 0], [0, 1], [0, -1]])
+    [[1, 0], [-1, 0], [0, 1], [0, -1]]
   end
 end
 
@@ -36,7 +34,7 @@ class Bishop < SlidingPiece
   end
   
   def move_dirs
-    Set.new([[1, 1], [-1, 1], [-1, -1], [1, -1]])
+    [[1, 1], [-1, 1], [-1, -1], [1, -1]]
   end
 end
 
@@ -46,6 +44,6 @@ class Queen < SlidingPiece
   end
   
   def move_dirs
-    Set.new([[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]])
+    [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]]
   end
 end
