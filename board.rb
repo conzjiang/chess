@@ -4,7 +4,6 @@ require 'set'
 class Board
   attr_accessor :board_array
   
-  attr_reader :black_king, :white_king
   
   def self.new_board
     Array.new(8) { Array.new(8) }
@@ -42,10 +41,10 @@ class Board
     board[7][3] = Queen.new(self, [7, 3], :white)    
     
     #king
-    @black_king = King.new(self, [0, 4], :black)
-    @white_king = King.new(self, [7, 4], :white)
-    board[0][4] = @black_king
-    board[7][4] = @white_king
+    black_king = King.new(self, [0, 4], :black)
+    white_king = King.new(self, [7, 4], :white)
+    board[0][4] = black_king
+    board[7][4] = white_king
   end
   
   def [](pos)
@@ -65,26 +64,34 @@ class Board
   end
   
   def checkmate?(color)
-    puts "entered checkmate"
-    king = color == :white ? @white_king : @black_king
+    king = nil
     
-    return false unless in_check?(color)
+    pieces.each do |piece|
+      if piece.class == King && piece.color == color
+        king = piece
+        break
+      end
+    end
+    
+    return false unless self.in_check?(color)
   
     king.valid_moves.empty?
- 
   end
   
   def in_check?(color)
-    king = color == :white ? @white_king : @black_king
+
+    king = nil
     
-    
+    pieces.each do |piece|
+      if piece.class == King && piece.color == color
+        king = piece
+        break
+      end
+    end
+
     pieces.any? do |piece|
-      next if piece.color == color
-      
-      puts "#{piece.class}"
-      puts "#{piece.pos}"
+      piece.color != king.color &&
       piece.moves.include?(king.pos)
-      puts "Finished piece"
     end
   end
   

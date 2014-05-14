@@ -24,7 +24,7 @@ class Piece
     board_dup = board.dup
 
     board_dup.move!(self.pos, move)
-    
+      
     board_dup.in_check?(self.color)
   end
   
@@ -43,15 +43,12 @@ class SlidingPiece < Piece
       
       loop do
         possible_pos = [pos[0] + (x * n), pos[1] + (y * n)]
-        #puts "#{possible_pos}: #{valid_space?(possible_pos)}"
         possible_moves << possible_pos if valid_space?(possible_pos)
         
         break if !valid_space?(possible_pos) || !board.empty?(possible_pos)
         n += 1
       end
     end
-    
-    p possible_moves
     
     possible_moves
   end
@@ -103,7 +100,6 @@ end
 
 class Pawn < Piece
   def moves
-    puts "entered pawn class"
     
     possible_moves = Set.new([])
 

@@ -4,6 +4,8 @@ require "./piece.rb"
 require "./board.rb"
 
 class Game
+  attr_accessor :winner
+  
   def initialize(player1, player2)
     @board = Board.new
     
@@ -16,6 +18,16 @@ class Game
   def won?
     @board.checkmate?(:white) || @board.checkmate?(:black)
   end
+  
+  def winner
+    if @board.checkmate?(:white)
+      :black
+    elsif @board.checkmate?(:black)
+      :white
+    else
+      nil
+    end
+  end
 
   def play
     until won?
@@ -23,11 +35,13 @@ class Game
     
       @player1.play_turn(@board)
       break if won?
-      @board.display
       
+      @board.display
+
       @player2.play_turn(@board)
-      puts "won?: #{won?}"
     end
+    
+    puts "Winner = #{winner}"
   end
 
 end
