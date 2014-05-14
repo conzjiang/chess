@@ -1,5 +1,8 @@
+# encoding: utf-8
+
 require './piece'
 require 'set'
+require 'colorize'
 
 class Board
   attr_accessor :board_array
@@ -11,6 +14,7 @@ class Board
   
   def initialize(board = Board.new_board)
     @board_array = board
+    @turn = :white
     
     # pawns
     (0..7).each do |col|
@@ -100,10 +104,13 @@ class Board
     
     raise "No piece at start position!" if empty?(start_pos)
     raise "Invalid move!" unless piece.moves.include?(end_pos)
+    raise "That's not your piece!" if piece.color != @turn
     
     piece.pos = end_pos
     self[end_pos] = piece
     self[start_pos] = nil
+    
+    @turn = @turn == :white ? :black : :white
   end
   
   def move!(start_pos, end_pos)
@@ -115,24 +122,61 @@ class Board
   end
   
   def display
-    board_array.each do |row|
+    turn = 1
+    
+    puts "   a  b  c  d  e  f  g  h "
+    
+    board_array.each_with_index do |row, row_i|
+      print "#{row_i + 1} "
+      
       row.each do |piece|
-        if piece.nil?
-          print "[___]"
-        elsif piece.is_a?(King)
-          print "[_K_]"
-        elsif piece.is_a?(Queen)
-          print "[_Q_]"
-        elsif piece.is_a?(Pawn)
-          print "[_p_]"
-        elsif piece.is_a?(Bishop)
-          print "[_B_]"
-        elsif piece.is_a?(Rook)
-          print "[_R_]"
+          
+        to_print = ""
+        
+        if turn == 1 
+          if piece.nil?
+            to_print = "   "
+          elsif piece.is_a?(King)
+            to_print = " ♚ ".colorize(piece.color)
+          elsif piece.is_a?(Queen)
+            to_print = " ♛ ".colorize(piece.color)
+          elsif piece.is_a?(Pawn)
+            to_print = " ♟ ".colorize(piece.color)
+          elsif piece.is_a?(Bishop)
+            to_print = " ♝ ".colorize(piece.color)
+          elsif piece.is_a?(Rook)
+            to_print = " ♜ ".colorize(piece.color)
+          else
+            to_print = " ♞ ".colorize(piece.color)
+          end
+          
+          to_print = to_print.colorize( :background => :red)
         else
-          print "[_kn]"
+          if piece.nil?
+            to_print = "   "
+          elsif piece.is_a?(King)
+            to_print = " ♚ ".colorize(piece.color)
+          elsif piece.is_a?(Queen)
+            to_print = " ♛ ".colorize(piece.color)
+          elsif piece.is_a?(Pawn)
+            to_print = " ♟ ".colorize(piece.color)
+          elsif piece.is_a?(Bishop)
+            to_print = " ♝ ".colorize(piece.color)
+          elsif piece.is_a?(Rook)
+            to_print = " ♜ ".colorize(piece.color)
+          else
+            to_print = " ♞ ".colorize(piece.color)
+          end
+          
+          to_print = to_print.colorize( :background => :cyan)
         end
+        
+        print to_print
+        
+        turn = turn == 1 ? 2 : 1
+        
       end
+      turn = turn == 1 ? 2 : 1
       puts
     end
   end
@@ -146,20 +190,4 @@ class Board
     
     b
   end
-end
-
-
-
-
-if __FILE__ == $PROGRAM_NAME
-  b = Board.new
-  r = Rook.new(b, [0,0], :black)
-
-  b[[2,0]] = Rook.new(b, [2,0], :black)
-  b[[0,2]] = Rook.new(b, [0,2], :white)
-  
-  k = Knight.new(b, [0,1], :black)
-
-  p = Pawn.new(b, [3,1], :white)
-
 end

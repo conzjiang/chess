@@ -68,14 +68,34 @@ class HumanPlayer
   end
   
   def play_turn(board)
-    puts "Start position? (ex. a4)"
-    start_pos = parse_input(gets.chomp)
-    puts "End position? (ex. e7)"
-    end_pos = parse_input(gets.chomp)
-    board.move(start_pos, end_pos)
+    begin
+      begin
+        puts "Start position? (ex. a4)"
+        start_pos = parse_input(gets.chomp)
+      rescue
+        puts "Invalid move!"
+        retry
+      end
+    
+      begin
+        puts "End position? (ex. e7)"
+        end_pos = parse_input(gets.chomp)
+      rescue
+        puts "Invalid move!"
+        retry
+      end 
+      
+      board.move(start_pos, end_pos)
+    rescue
+      puts "Invalid move!"
+      retry
+    end
+    
   end
   
   def parse_input(input)
+    raise "Invalid move!" unless input =~ /[a-h][1-8]/
+    
     output = []
     output << @translation[input[1]]
     output << @translation[input[0]]
