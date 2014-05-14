@@ -1,8 +1,3 @@
-#!/usr/bin/env ruby
-
-require "./piece.rb"
-require "./board.rb"
-
 class Game
   attr_accessor :winner
   
@@ -90,10 +85,3 @@ class HumanPlayer
 end
 
 
-if $PROGRAM_NAME == __FILE__
-  player1 = HumanPlayer.new
-  player2 = HumanPlayer.new
-  game = Game.new(player1, player2)
-  game.play
-  
-end

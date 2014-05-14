@@ -1,9 +1,3 @@
-# encoding: utf-8
-
-require './piece'
-require 'set'
-require 'colorize'
-
 class Board
   attr_accessor :board_array
   
@@ -93,7 +87,7 @@ class Board
     puts "   a  b  c  d  e  f  g  h "
     
     board_array.each_with_index do |row, row_i|
-      print "#{row_i + 1} "
+      print "#{8 - row_i} "
       
       row.each do |piece|
         bg_color = turn == 1 ? :red : :cyan
