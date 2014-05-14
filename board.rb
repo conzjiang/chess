@@ -66,19 +66,12 @@ class Board
   
   def checkmate?(color)
     puts "entered checkmate"
+    king = color == :white ? @white_king : @black_king
     
     return false unless in_check?(color)
-
-    color_pieces = pieces.select do |piece|
-      piece.color == color
-    end
   
-    color_pieces.all? do |piece|
-      if piece.class == King
-        puts "King's valid moves: #{piece.valid_moves}"
-      end
-      piece.valid_moves.empty?
-    end
+    king.valid_moves.empty?
+ 
   end
   
   def in_check?(color)
