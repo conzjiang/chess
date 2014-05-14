@@ -6,12 +6,16 @@ class Piece
   
   def initialize(board, pos, color)
     @board, @pos, @color = board, pos, color
-    #@board[pos] = self
+    @board[pos] = self
   end
   
   def valid_space?(coord)
     coord[0].between?(0, 7) && coord[1].between?(0, 7) &&
     (board.empty?(coord) || board[coord].color != self.color)
+  end
+  
+  def to_s
+    " "
   end
   
   def valid_moves
@@ -29,7 +33,7 @@ class Piece
   end
   
   def moves
-    # return array of moves piece can move to
+    raise NotImplementedError
   end
 end
 
@@ -56,18 +60,30 @@ class SlidingPiece < Piece
 end
 
 class Rook < SlidingPiece
+  def to_s
+    "♜"
+  end
+  
   def move_dirs
     Set.new([[1, 0], [-1, 0], [0, 1], [0, -1]])
   end
 end
 
 class Bishop < SlidingPiece
+  def to_s
+    "♝"
+  end
+  
   def move_dirs
     Set.new([[1, 1], [-1, 1], [-1, -1], [1, -1]])
   end
 end
 
 class Queen < SlidingPiece
+  def to_s
+    "♛"
+  end
+  
   def move_dirs
     Set.new([[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]])
   end
@@ -87,18 +103,30 @@ class SteppingPiece < Piece
 end
 
 class Knight < SteppingPiece
+  def to_s
+    "♞"
+  end
+  
   def move_dirs
     Set.new([[2, 1], [2, -1], [-2, 1], [-2, -1], [1, 2], [1, -2], [-1, 2], [-1, -2]])
   end
 end
 
 class King < SteppingPiece
+  def to_s
+    "♚"
+  end
+  
   def move_dirs
     Set.new([[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [-1, -1], [1, -1]])
   end
 end
 
 class Pawn < Piece
+  def to_s
+    "♟"
+  end
+  
   def moves
     
     possible_moves = Set.new([])

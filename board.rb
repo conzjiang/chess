@@ -7,48 +7,29 @@ require 'colorize'
 class Board
   attr_accessor :board_array
   
-  
-  def self.new_board
+  def self.empty_grid
     Array.new(8) { Array.new(8) }
   end
   
-  def initialize(board = Board.new_board)
+  def initialize(board = Board.empty_grid)
     @board_array = board
     @turn = :white
+    populate
+  end
+  
+  def populate
+    piece_classes = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook]
+    
+    piece_classes.each_with_index do |piece_class, i|
+      piece_class.new(self, [0, i], :black)      
+      piece_class.new(self, [7, i], :white)
+    end
     
     # pawns
     (0..7).each do |col|
-      board[1][col] = Pawn.new(self, [1, col], :black)
-      board[6][col] = Pawn.new(self, [6, col], :white)
+      Pawn.new(self, [1, col], :black)
+      Pawn.new(self, [6, col], :white)
     end
-    
-    # rooks
-    board[0][0] = Rook.new(self, [0, 0], :black)
-    board[0][7] = Rook.new(self, [0, 7], :black)
-    board[7][0] = Rook.new(self, [7, 0], :white)
-    board[7][7] = Rook.new(self, [7, 7], :white)
-    
-    # knights
-    board[0][1] = Knight.new(self, [0, 1], :black)
-    board[0][6] = Knight.new(self, [0, 6], :black)
-    board[7][1] = Knight.new(self, [7, 1], :white)
-    board[7][6] = Knight.new(self, [7, 6], :white)
-    
-    # bishops
-    board[0][2] = Bishop.new(self, [0, 2], :black)
-    board[0][5] = Bishop.new(self, [0, 5], :black)
-    board[7][2] = Bishop.new(self, [7, 2], :white)
-    board[7][5] = Bishop.new(self, [7, 5], :white)
-    
-    #queen
-    board[0][3] = Queen.new(self, [0, 3], :black)
-    board[7][3] = Queen.new(self, [7, 3], :white)    
-    
-    #king
-    black_king = King.new(self, [0, 4], :black)
-    white_king = King.new(self, [7, 4], :white)
-    board[0][4] = black_king
-    board[7][4] = white_king
   end
   
   def [](pos)
@@ -67,50 +48,35 @@ class Board
     Set.new(board_array.flatten.compact)
   end
   
-  def checkmate?(color)
-    king = nil
-    
-    pieces.each do |piece|
-      if piece.class == King && piece.color == color
-        king = piece
-        break
-      end
+  def find_king(color)
+    pieces.find do |piece|
+      piece.is_a?(King) && piece.color == color
     end
-    
+  end
+  
+  def checkmate?(color) 
     return false unless self.in_check?(color)
   
-    king.valid_moves.empty?
+    find_king(color).valid_moves.empty?
   end
   
   def in_check?(color)
-
-    king = nil
+    king = find_king(color)
     
-    pieces.each do |piece|
-      if piece.class == King && piece.color == color
-        king = piece
-        break
-      end
-    end
-
     pieces.any? do |piece|
       piece.color != king.color &&
       piece.moves.include?(king.pos)
     end
   end
   
-  def move(start_pos, end_pos)
+  def move(start_pos, end_pos, color)
     piece = self[start_pos]
     
     raise "No piece at start position!" if empty?(start_pos)
     raise "Invalid move!" unless piece.moves.include?(end_pos)
-    raise "That's not your piece!" if piece.color != @turn
+    raise "That's not your piece!" if piece.color != color
     
-    piece.pos = end_pos
-    self[end_pos] = piece
-    self[start_pos] = nil
-    
-    @turn = @turn == :white ? :black : :white
+    move!(start_pos, end_pos)
   end
   
   def move!(start_pos, end_pos)
@@ -130,52 +96,17 @@ class Board
       print "#{row_i + 1} "
       
       row.each do |piece|
-          
-        to_print = ""
+        bg_color = turn == 1 ? :red : :cyan
         
-        if turn == 1 
-          if piece.nil?
-            to_print = "   "
-          elsif piece.is_a?(King)
-            to_print = " ♚ ".colorize(piece.color)
-          elsif piece.is_a?(Queen)
-            to_print = " ♛ ".colorize(piece.color)
-          elsif piece.is_a?(Pawn)
-            to_print = " ♟ ".colorize(piece.color)
-          elsif piece.is_a?(Bishop)
-            to_print = " ♝ ".colorize(piece.color)
-          elsif piece.is_a?(Rook)
-            to_print = " ♜ ".colorize(piece.color)
-          else
-            to_print = " ♞ ".colorize(piece.color)
-          end
-          
-          to_print = to_print.colorize( :background => :red)
+        if piece.nil?
+          print "   ".colorize( :background => bg_color)
         else
-          if piece.nil?
-            to_print = "   "
-          elsif piece.is_a?(King)
-            to_print = " ♚ ".colorize(piece.color)
-          elsif piece.is_a?(Queen)
-            to_print = " ♛ ".colorize(piece.color)
-          elsif piece.is_a?(Pawn)
-            to_print = " ♟ ".colorize(piece.color)
-          elsif piece.is_a?(Bishop)
-            to_print = " ♝ ".colorize(piece.color)
-          elsif piece.is_a?(Rook)
-            to_print = " ♜ ".colorize(piece.color)
-          else
-            to_print = " ♞ ".colorize(piece.color)
-          end
-          
-          to_print = to_print.colorize( :background => :cyan)
+          print " #{piece} ".colorize(piece.color).colorize( :background => bg_color)
         end
         
-        print to_print
-        
         turn = turn == 1 ? 2 : 1
-        
       end
+      
       turn = turn == 1 ? 2 : 1
       puts
     end
